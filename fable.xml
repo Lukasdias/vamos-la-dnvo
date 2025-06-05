@@ -1,123 +1,228 @@
-<!-- Arquivo principal da fabula - define configuracoes globais e estrutura -->
 <fable>
-  <!-- Configuracao global da fonte para toda a fabula -->
-  <config font-family="Poppins" />
+  <!-- Configurações globais -->
+  <config font-family="Montserrat" />
 
-  <!-- Propriedades globais - variaveis que persistem entre paginas -->
-  <property name="pontuacao" default="0" />
-  <property name="visitante" default="Aventureiro" />
+  <!-- Variáveis do sistema de escolhas -->
+  <property name="escolha_feita" default="false" />
+  <property name="caminho" default="" />
+  <property name="vida" default="500" />
+  <property name="coragem" default="50" />
 
-  <!-- Pagina de boas-vindas com cenario da floresta -->
-  <page id="welcome" bg_image="forest-bg.png" bg_music="osts-retro-forest.mp3">
-    <!-- Titulo principal centralizado -->
+  <property name="capitulo" default="1" />
+
+  <page id="escolha" bg_color="#2c1810" bg_music="osts-fear.mp3">
+    <!-- Interface do jogo - Topo centralizado -->
     <agent
-      id="titulo_principal"
-      x="400"
-      y="100"
-      text="Bem vindo ao CodeFab"
-      color="red"
-      font-size="32"
-      animation="slide-down"
-    />
-
-    <!-- Subtitulo com nome do visitante -->
-    <agent
-      id="subtitulo"
-      x="400"
-      y="150"
-      text="Olá, $visitante!"
-      color="red"
+      id="titulo"
+      x="center"
+      y="25"
+      text="🌙 A Floresta Sombria - Capítulo $capitulo"
+      color="#ffffff"
       font-size="20"
-      animation="typewriter"
+      on_click="goToPage('testing')"
     />
 
-    <!-- Elementos decorativos da floresta -->
+    <!-- Status do jogador - Abaixo do título -->
     <agent
-      id="arvore_esquerda"
-      x="50"
-      y="250"
-      image="forest-tree-1.png"
-      animation="slide-left"
-    />
-    <agent
-      id="arvore_direita"
-      x="650"
-      y="280"
-      image="forest-tree-2.png"
-      animation="slide-right"
-    />
-    <agent
-      id="cogumelo"
-      x="150"
-      y="420"
-      image="forest-mushroom.png"
-      animation="bounce-in hover-bounce"
-    />
-    <agent
-      id="arbusto"
-      x="600"
-      y="400"
-      image="forest-bush-1.png"
-      animation="slide-right"
+      id="status"
+      x="center"
+      y="55"
+      text="❤️ Vida: $vida | 🛡️ Coragem: $coragem"
+      color="#ffff00"
+      font-size="14"
     />
 
-    <!-- Chao feito com tiles da floresta -->
-    <fab-for each="i in 0..19" index="idx">
+    <!-- Narrativa inicial - Área central superior -->
+    <fab-if when="not $escolha_feita">
       <agent
-        id="tile-chao-$i"
-        x="$i * 40"
-        y="500"
-        image="forest-1.png"
-        width="40"
-        height="40"
+        id="cenario"
+        x="center"
+        y="120"
+        width="750"
+        height="80"
+        text="Você caminha pela floresta sombria quando encontra uma bifurcação misteriosa. À esquerda, um caminho illuminado pela lua. À direita, um túnel escuro e úmido. Atrás de você, ouve-se uivos distantes..."
+        color="#cccccc"
+        font-size="16"
       />
-    </fab-for>
 
-    <!-- Segunda fileira do chao para mais consistencia -->
-    <fab-for each="i in 0..19" index="idx">
+      <!-- Opções de escolha - Distribuídas horizontalmente -->
       <agent
-        id="tile-chao2-$i"
-        x="$i * 40"
-        y="540"
-        image="forest-2.png"
-        width="40"
-        height="40"
-      />
-    </fab-for>
-
-    <!-- Botao interativo para demonstrar funcionalidade -->
-    <agent
-      id="botao_explorar"
-      x="400"
-      y="350"
-      text="Clique para explorar! $pontuacao"
-      color="red"
-      font-size="16"
-      animation="pulse hover-glow click-bounce"
-      on_click="set(pontuacao, $pontuacao + 1)"
-    />
-
-    <!-- Feedback interativo -->
-    <fab-if when="$pontuacao > 0">
-      <agent
-        id="feedback"
-        x="400"
-        y="300"
-        text="Você descobriu $pontuacao segredos!"
-        color="red"
+        id="esquerda"
+        x="0"
+        y="240"
+        height="60"
+        width="200"
+        text="🌙 Seguir à esquerda
+(Caminho da Lua)"
+        color="#87ceeb"
         font-size="14"
-        animation="bounce-in"
+        animation="hover-grow"
+        on_click="set(escolha_feita, true); set(caminho, 'lua')"
+      />
+
+      <agent
+        id="direita"
+        x="300"
+        y="240"
+        height="60"
+        width="200"
+        text="🕳️ Entrar no túnel
+(Caminho Sombrio)"
+        color="#8b4513"
+        font-size="14"
+        animation="hover-grow"
+        on_click="set(escolha_feita, true); set(caminho, 'sombra')"
+      />
+
+      <agent
+        id="voltar"
+        x="550"
+        y="240"
+        height="60"
+        width="200"
+        text="🏃 Correr de volta
+(Fugir dos uivos)"
+        color="#ff6b6b"
+        font-size="14"
+        animation="hover-grow"
+        on_click="set(escolha_feita, true); set(caminho, 'fuga')"
       />
     </fab-if>
 
-    <!-- Informacoes de ajuda -->
-    <agent
-      id="dica"
-      x="400"
-      y="450"
-      text="Use CTRL+Space para autocomplete no editor"
-      color="#e6e6fa"
-      font-size="12"
-    />
+    <!-- Consequências: Caminho da Lua -->
+    <fab-if when="$escolha_feita and $caminho = 'lua'">
+      <agent
+        id="resultado-lua"
+        x="center"
+        y="140"
+        width="750"
+        height="100"
+        text="🌟 Você seguiu o caminho iluminado e encontrou um cristal mágico! Sua coragem aumenta e você se sente renovado. Um druida aparece e o guia em segurança."
+        color="#e6e6fa"
+        font-size="16"
+        animation="fade-in"
+      />
+
+      <agent
+        id="bonus-lua"
+        x="center"
+        y="270"
+        text="✨ +20 Coragem | +10 Vida"
+        color="#00ff00"
+        font-size="18"
+        animation="bounce-in"
+        on_click="set(coragem, $coragem + 20); set(vida, $vida + 10)"
+      />
+    </fab-if>
+
+    <!-- Consequências: Caminho das Sombras -->
+    <fab-if when="$escolha_feita and $caminho = 'sombra'">
+      <agent
+        id="resultado-sombra"
+        x="center"
+        y="140"
+        width="750"
+        height="100"
+        text="💀 O túnel estava cheio de armadilhas! Você tropeça e se machuca, mas encontra um tesouro escondido. Sua vida diminui, mas você ganha experiência valiosa."
+        color="#cd853f"
+        font-size="16"
+        animation="fade-in"
+      />
+
+      <agent
+        id="bonus-sombra"
+        x="center"
+        y="270"
+        text="⚔️ +10 Coragem | -20 Vida"
+        color="#ffa500"
+        font-size="18"
+        animation="bounce-in"
+        on_click="set(coragem, $coragem + 10); set(vida, $vida - 20)"
+      />
+    </fab-if>
+
+    <!-- Consequências: Fuga -->
+    <fab-if when="$escolha_feita and $caminho = 'fuga'">
+      <agent
+        id="resultado-fuga"
+        x="center"
+        y="140"
+        width="750"
+        height="100"
+        text="🏃 Você correu de volta mas tropeçou! Os uivos se aproximam... Sua coragem diminui, mas você consegue escapar por pouco e encontra uma cabana segura."
+        color="#ffa07a"
+        font-size="16"
+        animation="fade-in"
+      />
+
+      <agent
+        id="bonus-fuga"
+        x="center"
+        y="270"
+        text="🏠 Lugar Seguro | -10 Coragem"
+        color="#ff4500"
+        font-size="18"
+        animation="bounce-in"
+        on_click="set(coragem, $coragem - 10)"
+      />
+    </fab-if>
+
+    <!-- Botões de ação após escolha - Área inferior -->
+    <fab-if when="$escolha_feita and $vida > 0">
+      <agent
+        id="proximo-capitulo"
+        x="280"
+        y="420"
+        width="180"
+        height="40"
+        text="📖 Próximo Capítulo"
+        color="#ffffff"
+        font-size="14"
+        animation="hover-grow"
+        on_click="set(capitulo, $capitulo + 1); set(escolha_feita, false); set(caminho, '')"
+      />
+
+      <agent
+        id="reiniciar"
+        x="520"
+        y="420"
+        width="180"
+        height="40"
+        text="🔄 Recomeçar História"
+        color="#ffffff"
+        font-size="14"
+        animation="hover-grow"
+        on_click="set(escolha_feita, false); set(caminho, ''); set(vida, 100); set(coragem, 50); set(capitulo, 1)"
+      />
+    </fab-if>
+
+    <!-- Sistema de Game Over - Centralizado na tela -->
+    <fab-if when="$vida <= 0">
+      <agent
+        id="game-over"
+        x="center"
+        y="280"
+        width="600"
+        height="80"
+        text="💀 GAME OVER
+Sua jornada terminou aqui..."
+        color="#ff0000"
+        font-size="24"
+        animation="pulse"
+      />
+
+      <agent
+        id="restart"
+        x="center"
+        y="380"
+        width="250"
+        height="50"
+        text="🔄 Começar Nova Jornada"
+        color="#ffffff"
+        font-size="16"
+        animation="hover-grow"
+        on_click="set(vida, 100); set(coragem, 50); set(capitulo, 1); set(escolha_feita, false); set(caminho, '')"
+      />
+    </fab-if>
   </page>
 </fable>
