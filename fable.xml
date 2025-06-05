@@ -8,12 +8,7 @@
   <property name="visitante" default="Aventureiro" />
 
   <!-- Pagina de boas-vindas com cenario da floresta -->
-  <page
-    id="welcome"
-    bg_color="#2a5d31"
-    bg_image="forest-bg.png"
-    bg_music="osts-retro-forest.mp3"
-  >
+  <page id="welcome" bg_image="forest-bg.png" bg_music="osts-retro-forest.mp3">
     <!-- Titulo principal centralizado -->
     <agent
       id="titulo_principal"
