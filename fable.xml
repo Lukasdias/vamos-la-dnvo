@@ -19,7 +19,6 @@
       text="🌙 A Floresta Sombria - Capítulo $capitulo"
       color="#ffffff"
       font-size="20"
-      on_click="goToPage('testing')"
     />
 
     <!-- Status do jogador - Abaixo do título -->
